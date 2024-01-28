@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "527747149851",
+    "project_id": "routetrackapp-f1d36",
+    "storage_bucket": "routetrackapp-f1d36.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:527747149851:android:b2c2a5badd9d83165ec8be",
+        "android_client_info": {
+          "package_name": "com.example.routetrack"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD42GfFNKqaAk0b-u3u919QwQ_YTfQBbaM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
