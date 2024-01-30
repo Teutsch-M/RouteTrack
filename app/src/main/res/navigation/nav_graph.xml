@@ -3,20 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/routeFragment">
 
-    <fragment
-        android:id="@+id/loginFragment"
-        android:name="com.example.routetrack.ui.LoginFragment"
-        android:label="fragment_login"
-        tools:layout="@layout/fragment_login" >
-        <action
-            android:id="@+id/action_loginFragment_to_routeFragment"
-            app:destination="@id/routeFragment" />
-    </fragment>
     <fragment
         android:id="@+id/routeFragment"
         android:name="com.example.routetrack.ui.RouteFragment"
         android:label="fragment_route"
         tools:layout="@layout/fragment_route" />
+    <fragment
+        android:id="@+id/trackingFragment"
+        android:name="com.example.routetrack.ui.TrackingFragment"
+        android:label="fragment_tracking"
+        tools:layout="@layout/fragment_tracking" />
+    <fragment
+        android:id="@+id/summaryFragment"
+        android:name="com.example.routetrack.ui.SummaryFragment"
+        android:label="fragment_summary"
+        tools:layout="@layout/fragment_summary" />
 </navigation>

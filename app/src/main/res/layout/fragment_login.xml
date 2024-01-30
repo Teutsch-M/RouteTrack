@@ -6,7 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center"
     android:orientation="vertical"
-    android:background="#7D48DD"
     tools:context=".ui.LoginFragment">
 
     <TextView

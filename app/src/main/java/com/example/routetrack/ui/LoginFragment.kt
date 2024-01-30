@@ -1,5 +1,6 @@
 package com.example.routetrack.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.example.routetrack.MainActivity
 import com.example.routetrack.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -64,8 +66,10 @@ class LoginFragment : Fragment() {
                 Toast.makeText(activity,"Fill the missing fields!",Toast.LENGTH_SHORT).show()
             else{
                 firebaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener {
-                    if (it.isSuccessful)
-                        findNavController().navigate(R.id.action_loginFragment_to_routeFragment)
+                    if (it.isSuccessful){
+                        val intent = Intent(this@LoginFragment.requireContext(), MainActivity::class.java)
+                        startActivity(intent)
+                    }
                     else
                         Toast.makeText(activity,"Invalid or expired credentials!",Toast.LENGTH_SHORT).show()
                 }
