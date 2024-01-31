@@ -1,11 +1,15 @@
 package com.example.routetrack.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import com.example.routetrack.R
+import com.example.routetrack.services.TrackingService
+import com.example.routetrack.utility.Constants.ACTION_START_RESUME_SERVICE
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 
@@ -20,6 +24,7 @@ class TrackingFragment : Fragment() {
     private var param2: String? = null
     private lateinit var mapView: MapView
     private lateinit var map: GoogleMap
+    private lateinit var buttonTimer: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +43,7 @@ class TrackingFragment : Fragment() {
 
         view?.apply {
             initializeView(this)
+            registerListeners(this)
         }
         mapView.onCreate(savedInstanceState)
 
@@ -84,6 +90,18 @@ class TrackingFragment : Fragment() {
         mapView.getMapAsync {
             map = it
         }
+        buttonTimer = view.findViewById(R.id.buttonTimer)
+    }
+
+    private fun registerListeners(view: View){
+        buttonTimer.setOnClickListener {
+            commandService(ACTION_START_RESUME_SERVICE)
+        }
+    }
+
+    private fun commandService(action: String) = Intent(requireContext(), TrackingService::class.java).also {
+        it.action = action
+        requireContext().startService(it)
     }
 
 }

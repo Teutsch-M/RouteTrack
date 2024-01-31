@@ -37,12 +37,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/button_timerStart"
+            app:layout_constraintBottom_toTopOf="@+id/buttonTimer"
             />
 
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_timerStart"
+            android:id="@+id/buttonTimer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/start"
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:text="@string/finish_route"
             android:visibility="gone"
-            app:layout_constraintStart_toEndOf="@+id/button_timerStart"
+            app:layout_constraintStart_toEndOf="@+id/buttonTimer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/timer"
