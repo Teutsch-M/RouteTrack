@@ -1,11 +1,13 @@
 package com.example.routetrack
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.routetrack.utility.Constants.ACTION_SHOW_TRACKING
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -19,6 +21,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        navToTrackingFrag(intent)
 
         navigationView = findViewById(R.id.nav_view)
         floatingButton = findViewById(R.id.addRouteButton)
@@ -49,5 +53,15 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun navToTrackingFrag(intent: Intent?){
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        if (intent?.action == ACTION_SHOW_TRACKING)
+            navHostFragment.findNavController().navigate(R.id.action_global_trackingFragment)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        navToTrackingFrag(intent)
+    }
 
 }
