@@ -66,10 +66,12 @@ class TrackingService: LifecycleService() {
                         Log.d(TAG, "Service started")
                     }
                     else {
+                        startNotification()
                         Log.d(TAG, "Service resumed")
                     }
                 }
                 ACTION_PAUSE_SERVICE -> {
+                    isTracking.postValue(false)
                     Log.d(TAG,"Service paused")
                 }
                 ACTION_STOP_SERVICE -> {

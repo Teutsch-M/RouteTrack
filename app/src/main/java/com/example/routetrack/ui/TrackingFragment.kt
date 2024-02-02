@@ -1,17 +1,23 @@
 package com.example.routetrack.ui
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.lifecycle.Observer
 import com.example.routetrack.R
 import com.example.routetrack.services.TrackingService
+import com.example.routetrack.utility.Constants.ACTION_PAUSE_SERVICE
 import com.example.routetrack.utility.Constants.ACTION_START_RESUME_SERVICE
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.PolylineOptions
 
 
 private const val ARG_PARAM1 = "param1"
@@ -25,6 +31,9 @@ class TrackingFragment : Fragment() {
     private lateinit var mapView: MapView
     private lateinit var map: GoogleMap
     private lateinit var buttonTimer: Button
+    private lateinit var buttonFinish: Button
+    private var isTracking = false
+    private var coordinates = mutableListOf<MutableList<LatLng>>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +53,14 @@ class TrackingFragment : Fragment() {
         view?.apply {
             initializeView(this)
             registerListeners(this)
+            observeData()
         }
+
+        mapView.getMapAsync {
+            map = it
+            addAllLine()
+        }
+
         mapView.onCreate(savedInstanceState)
 
         return view
@@ -87,21 +103,73 @@ class TrackingFragment : Fragment() {
 
     private fun initializeView(view: View){
         mapView = view.findViewById(R.id.mapView)
-        mapView.getMapAsync {
-            map = it
-        }
         buttonTimer = view.findViewById(R.id.buttonTimer)
+        buttonFinish = view.findViewById(R.id.button_finishRoute)
     }
 
     private fun registerListeners(view: View){
         buttonTimer.setOnClickListener {
-            commandService(ACTION_START_RESUME_SERVICE)
+            commandService(if (isTracking)
+                ACTION_PAUSE_SERVICE
+            else
+                ACTION_START_RESUME_SERVICE)
         }
     }
 
     private fun commandService(action: String) = Intent(requireContext(), TrackingService::class.java).also {
         it.action = action
         requireContext().startService(it)
+    }
+
+    private fun addLine(){
+        if (coordinates.isNotEmpty() && coordinates.last().size > 1){
+            val lastCoord = coordinates.last().last()
+            val bLastCoord = coordinates.last()[coordinates.last().size - 2]
+            val lineOptions = PolylineOptions()
+                .color(Color.RED)
+                .width(12F)
+                .add(bLastCoord)
+                .add(lastCoord)
+            map.addPolyline(lineOptions)
+        }
+    }
+
+    private fun addAllLine(){
+        for (line in coordinates){
+            val lineOptions = PolylineOptions()
+                .color(Color.RED)
+                .width(12F)
+                .addAll(line)
+            map.addPolyline(lineOptions)
+        }
+    }
+
+    private fun toggleCamera(){
+        if (coordinates.isNotEmpty() && coordinates.last().isNotEmpty())
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates.last().last(), 16F))
+    }
+
+    private fun updateTracking(isTracking: Boolean){
+        this.isTracking = isTracking
+        if (!isTracking){
+            buttonTimer.text = "Start"
+            buttonFinish.visibility = View.VISIBLE
+        }
+        else{
+            buttonTimer.text = "STOP"
+            buttonFinish.visibility = View.GONE
+        }
+    }
+
+    private fun observeData(){
+        TrackingService.isTracking.observe(viewLifecycleOwner, Observer {
+            updateTracking(it)
+        })
+        TrackingService.coordinates.observe(viewLifecycleOwner, Observer {
+            coordinates = it
+            addLine()
+            toggleCamera()
+        })
     }
 
 }
