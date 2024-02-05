@@ -35,16 +35,27 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.LatLng
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class TrackingService: LifecycleService() {
 
     private val TAG = "TrackingService"
     private var isNewRoute = true
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private val notificationTime = MutableLiveData<Long>()
+    private var isTiming = false
+    private var startTime = 0L
+    private var passedTime = 0L
+    private var totalTime = 0L
+    private var lastSec = 0L
 
     companion object{
         val coordinates = MutableLiveData<MutableList<MutableList<LatLng>>>()
         val isTracking = MutableLiveData<Boolean>()
+        val stopperTime = MutableLiveData<Long>()
     }
 
     override fun onCreate() {
@@ -66,12 +77,13 @@ class TrackingService: LifecycleService() {
                         Log.d(TAG, "Service started")
                     }
                     else {
-                        startNotification()
+                        startTimer()
                         Log.d(TAG, "Service resumed")
                     }
                 }
                 ACTION_PAUSE_SERVICE -> {
                     isTracking.postValue(false)
+                    isTiming = false
                     Log.d(TAG,"Service paused")
                 }
                 ACTION_STOP_SERVICE -> {
@@ -94,8 +106,8 @@ class TrackingService: LifecycleService() {
     }
 
     private fun startNotification(){
-        addEmptyCoordList()
         isTracking.postValue(true)
+        startTimer()
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
@@ -122,6 +134,8 @@ class TrackingService: LifecycleService() {
     private fun initializeValues(){
         coordinates.postValue(mutableListOf())
         isTracking.postValue(false)
+        stopperTime.postValue(0)
+        notificationTime.postValue(0)
     }
 
     private fun addEmptyCoordList() = coordinates.value?.apply {
@@ -166,6 +180,25 @@ class TrackingService: LifecycleService() {
         }
         else {
             fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+        }
+    }
+
+    private fun startTimer(){
+        addEmptyCoordList()
+        isTracking.postValue(true)
+        startTime = System.currentTimeMillis()
+        isTiming = true
+        CoroutineScope(Dispatchers.Main).launch {
+            while (isTracking.value == true){
+                passedTime = System.currentTimeMillis() - startTime
+                stopperTime.postValue(totalTime + passedTime)
+                if (stopperTime.value!! >= lastSec + 1000L){
+                    notificationTime.postValue(notificationTime.value!! + 1)
+                    lastSec += 1000L
+                }
+                delay(50L)
+            }
+            totalTime += passedTime
         }
     }
 

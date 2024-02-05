@@ -23,4 +23,19 @@ object TrackingUtility {
         )
     }
 
+    fun formatTime(ms: Long, includeMillis: Boolean): String {
+        var milliSec = ms
+        val hours = milliSec / (1000*60*24)
+        milliSec -= hours * (1000*60*24)
+        val minutes = milliSec / (1000*60)
+        milliSec -= minutes * (1000*60)
+        val seconds = milliSec / (1000)
+        milliSec -= seconds * (1000)
+        milliSec /= 10
+        return "${if(hours < 10) "0" else ""}$hours:" +
+                "${if(minutes < 10) "0" else ""}$minutes:" +
+                "${if(seconds < 10) "0" else ""}$seconds:" +
+                if(includeMillis) "${if(milliSec < 10) "0" else ""}$milliSec" else ""
+    }
+
 }

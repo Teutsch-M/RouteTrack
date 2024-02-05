@@ -8,11 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import com.example.routetrack.R
 import com.example.routetrack.services.TrackingService
 import com.example.routetrack.utility.Constants.ACTION_PAUSE_SERVICE
 import com.example.routetrack.utility.Constants.ACTION_START_RESUME_SERVICE
+import com.example.routetrack.utility.TrackingUtility
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -32,8 +34,10 @@ class TrackingFragment : Fragment() {
     private lateinit var map: GoogleMap
     private lateinit var buttonTimer: Button
     private lateinit var buttonFinish: Button
+    private lateinit var timerText: TextView
     private var isTracking = false
     private var coordinates = mutableListOf<MutableList<LatLng>>()
+    private var routeTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,13 +62,14 @@ class TrackingFragment : Fragment() {
 
         mapView.getMapAsync {
             map = it
-            addAllLine()
         }
 
         mapView.onCreate(savedInstanceState)
 
         return view
     }
+
+
 
     override fun onStart() {
         super.onStart()
@@ -74,6 +79,7 @@ class TrackingFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         mapView.onResume()
+        addAllLine()
     }
 
     override fun onPause() {
@@ -105,6 +111,7 @@ class TrackingFragment : Fragment() {
         mapView = view.findViewById(R.id.mapView)
         buttonTimer = view.findViewById(R.id.buttonTimer)
         buttonFinish = view.findViewById(R.id.button_finishRoute)
+        timerText = view.findViewById(R.id.timer)
     }
 
     private fun registerListeners(view: View){
@@ -165,10 +172,17 @@ class TrackingFragment : Fragment() {
         TrackingService.isTracking.observe(viewLifecycleOwner, Observer {
             updateTracking(it)
         })
+
         TrackingService.coordinates.observe(viewLifecycleOwner, Observer {
             coordinates = it
             addLine()
             toggleCamera()
+        })
+
+        TrackingService.stopperTime.observe(viewLifecycleOwner, Observer {
+            routeTime = it
+            val timeInText = TrackingUtility.formatTime(routeTime, true)
+            timerText.text = timeInText
         })
     }
 
