@@ -9,17 +9,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.example.routetrack.R
+import com.example.routetrack.database.Converter
+import com.example.routetrack.database.Route
 import com.example.routetrack.services.TrackingService
+import com.example.routetrack.ui.viewmodels.RouteViewModel
 import com.example.routetrack.utility.Constants.ACTION_PAUSE_SERVICE
 import com.example.routetrack.utility.Constants.ACTION_START_RESUME_SERVICE
+import com.example.routetrack.utility.Constants.ACTION_STOP_SERVICE
 import com.example.routetrack.utility.TrackingUtility
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
+import java.util.Calendar
+import kotlin.math.round
 
 
 private const val ARG_PARAM1 = "param1"
@@ -30,6 +40,7 @@ class TrackingFragment : Fragment() {
 
     private var param1: String? = null
     private var param2: String? = null
+    private val viewModel: RouteViewModel by viewModels()
     private lateinit var mapView: MapView
     private lateinit var map: GoogleMap
     private lateinit var buttonTimer: Button
@@ -121,6 +132,11 @@ class TrackingFragment : Fragment() {
             else
                 ACTION_START_RESUME_SERVICE)
         }
+
+        buttonFinish.setOnClickListener {
+            seeWholeRoute()
+            saveRoute()
+        }
     }
 
     private fun commandService(action: String) = Intent(requireContext(), TrackingService::class.java).also {
@@ -156,6 +172,15 @@ class TrackingFragment : Fragment() {
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates.last().last(), 16F))
     }
 
+    private fun seeWholeRoute(){
+        val bounds = LatLngBounds.Builder()
+        for (line in coordinates)
+            for (coord in line)
+                bounds.include(coord)
+
+        map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), mapView.width, mapView.height, (mapView.height * 0.25).toInt()))
+    }
+
     private fun updateTracking(isTracking: Boolean){
         this.isTracking = isTracking
         if (!isTracking){
@@ -184,6 +209,33 @@ class TrackingFragment : Fragment() {
             val timeInText = TrackingUtility.formatTime(routeTime, true)
             timerText.text = timeInText
         })
+    }
+
+
+    private fun saveRoute(){
+        map.snapshot {
+            val img = Converter.fromBitmap(it)
+            var distance = 0F
+            for (line in coordinates)
+                distance += TrackingUtility.getDistance(line)
+            val avgSpeed = round((distance / (routeTime / 1000 / 60 / 60)) * 10) / 10
+            val date = Calendar.getInstance().timeInMillis
+            val route = Route(
+                img,
+                distance,
+                routeTime,
+                avgSpeed,
+                date
+            )
+            viewModel.addRoute(route)
+            Toast.makeText(activity, "Route successfully added!", Toast.LENGTH_SHORT).show()
+            finishRoute()
+        }
+    }
+
+    private fun finishRoute(){
+        commandService(ACTION_STOP_SERVICE)
+        findNavController().navigate(R.id.action_trackingFragment_to_routeFragment)
     }
 
 }

@@ -19,7 +19,11 @@
         android:id="@+id/trackingFragment"
         android:name="com.example.routetrack.ui.TrackingFragment"
         android:label="fragment_tracking"
-        tools:layout="@layout/fragment_tracking" />
+        tools:layout="@layout/fragment_tracking" >
+        <action
+            android:id="@+id/action_trackingFragment_to_routeFragment"
+            app:destination="@id/routeFragment" />
+    </fragment>
     <fragment
         android:id="@+id/summaryFragment"
         android:name="com.example.routetrack.ui.SummaryFragment"

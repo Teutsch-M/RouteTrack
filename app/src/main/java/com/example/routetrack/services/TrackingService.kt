@@ -47,6 +47,7 @@ class TrackingService: LifecycleService() {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private val notificationTime = MutableLiveData<Long>()
     private var isTiming = false
+    private var isServiceStopped = false
     private var startTime = 0L
     private var passedTime = 0L
     private var totalTime = 0L
@@ -87,6 +88,7 @@ class TrackingService: LifecycleService() {
                     Log.d(TAG,"Service paused")
                 }
                 ACTION_STOP_SERVICE -> {
+                    stopService()
                     Log.d(TAG,"Service stopped")
                 }
 
@@ -200,6 +202,16 @@ class TrackingService: LifecycleService() {
             }
             totalTime += passedTime
         }
+    }
+
+    private fun stopService(){
+        isServiceStopped = true
+        isNewRoute = true
+        isTracking.postValue(false)
+        isTiming = false
+        initializeValues()
+        stopForeground(STOP_FOREGROUND_REMOVE)
+        stopSelf()
     }
 
 }
