@@ -1,9 +1,9 @@
 package com.example.routetrack.database
 
-import android.graphics.Bitmap
+
 
 data class Route(
-    var img: ByteArray?,
+    var img: String?,
     var distance: Float,
     var duration: Long,
     var avgSpeed: Float,

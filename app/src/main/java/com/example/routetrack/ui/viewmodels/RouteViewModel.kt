@@ -18,13 +18,18 @@ class RouteViewModel: ViewModel() {
 
     fun addRoute(route: Route){
         viewModelScope.launch {
-            db.collection("routes").document(userId).set(route)
-                .addOnSuccessListener {
-                    Log.d(TAG, "Route successfully added!")
-                }
-                .addOnFailureListener {
-                    Log.e(TAG, it.message, it)
-                }
+            try {
+                db.collection("routes").document(userId).collection("routes").add(route)
+                    .addOnSuccessListener {
+                        Log.d(TAG, "Route successfully added!")
+                    }
+                    .addOnFailureListener {
+                        Log.e(TAG, it.message, it)
+                    }
+            }
+            catch (ex: Exception){
+                Log.e(TAG, ex.message, ex)
+            }
         }
     }
 

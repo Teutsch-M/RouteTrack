@@ -88,8 +88,8 @@ class TrackingService: LifecycleService() {
                     Log.d(TAG,"Service paused")
                 }
                 ACTION_STOP_SERVICE -> {
-                    stopService()
                     Log.d(TAG,"Service stopped")
+                    stopService()
                 }
 
                 else -> {

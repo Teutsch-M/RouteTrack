@@ -75,15 +75,6 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.1.0")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
 
-    // Dagger Core
-    implementation("com.google.dagger:dagger:2.28.3")
-    kapt("com.google.dagger:dagger-compiler:2.25.2")
-
-    // Dagger Android
-    api ("com.google.dagger:dagger-android:2.35.1")
-    api ("com.google.dagger:dagger-android-support:2.28.1")
-    kapt("com.google.dagger:dagger-android-processor:2.23.2")
-
     // Easy Permissions
     implementation("pub.devrel:easypermissions:3.0.0")
 

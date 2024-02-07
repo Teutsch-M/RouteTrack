@@ -50,7 +50,7 @@ object TrackingUtility {
             Location.distanceBetween(a.latitude, a.longitude, b.latitude, b.longitude, results)
             dist += results[0]
         }
-        return dist / 1000
+        return dist / 1000f
     }
 
 }
