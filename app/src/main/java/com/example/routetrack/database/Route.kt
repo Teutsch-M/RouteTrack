@@ -8,4 +8,6 @@ data class Route(
     var duration: Long,
     var avgSpeed: Float,
     var timestamp: Long
-)
+) {
+    constructor() : this(null, 0F, 0L, 0F, 0L)
+}

@@ -11,9 +11,9 @@ import kotlinx.coroutines.launch
 
 class RouteViewModel: ViewModel() {
 
-    val TAG = "RouteViewModel"
-    val db = Firebase.firestore
-    val userId = FirebaseAuth.getInstance().currentUser!!.uid
+    private val TAG = "RouteViewModel"
+    private val db = Firebase.firestore
+    private val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
     fun addRoute(route: Route){
         viewModelScope.launch {
