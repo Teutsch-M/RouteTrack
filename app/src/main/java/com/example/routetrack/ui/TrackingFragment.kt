@@ -44,10 +44,10 @@ class TrackingFragment : Fragment() {
     private val TAG = "TrackingFragment"
     private val viewModel: RouteViewModel by viewModels()
     private lateinit var mapView: MapView
-    private lateinit var map: GoogleMap
     private lateinit var buttonTimer: Button
     private lateinit var buttonFinish: Button
     private lateinit var timerText: TextView
+    private var map: GoogleMap? = null
     private var isTracking = false
     private var coordinates = mutableListOf<MutableList<LatLng>>()
     private var routeTime: Long = 0
@@ -70,14 +70,16 @@ class TrackingFragment : Fragment() {
         view?.apply {
             initializeView(this)
             registerListeners(this)
-            observeData()
         }
 
         mapView.getMapAsync {
             map = it
+            addAllLine()
         }
 
         mapView.onCreate(savedInstanceState)
+
+        observeData()
 
         return view
     }
@@ -155,7 +157,7 @@ class TrackingFragment : Fragment() {
                 .width(12F)
                 .add(bLastCoord)
                 .add(lastCoord)
-            map.addPolyline(lineOptions)
+            map?.addPolyline(lineOptions)
         }
     }
 
@@ -165,13 +167,13 @@ class TrackingFragment : Fragment() {
                 .color(Color.RED)
                 .width(12F)
                 .addAll(line)
-            map.addPolyline(lineOptions)
+            map?.addPolyline(lineOptions)
         }
     }
 
     private fun toggleCamera(){
         if (coordinates.isNotEmpty() && coordinates.last().isNotEmpty())
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates.last().last(), 16F))
+            map?.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates.last().last(), 16F))
     }
 
     private fun seeWholeRoute(){
@@ -180,7 +182,7 @@ class TrackingFragment : Fragment() {
             for (coord in line)
                 bounds.include(coord)
 
-        map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), mapView.width, mapView.height, (mapView.height * 0.15).toInt()))
+        map?.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), mapView.width, mapView.height, (mapView.height * 0.15).toInt()))
     }
 
     private fun updateTracking(isTracking: Boolean){
@@ -215,7 +217,7 @@ class TrackingFragment : Fragment() {
 
 
     private fun saveRoute(){
-        map.snapshot {
+        map?.snapshot {
             val img = Converter.fromBitmap(it)
             var distance = 0F
             for (line in coordinates)
