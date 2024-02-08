@@ -1,7 +1,6 @@
 package com.example.routetrack.ui.viewmodels
 
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.routetrack.database.Route
@@ -29,6 +28,38 @@ class RouteViewModel: ViewModel() {
             }
             catch (ex: Exception){
                 Log.e(TAG, ex.message, ex)
+            }
+        }
+    }
+
+    fun getRoutes(onSuccess: (List<Route>) -> Unit, onFailure: (Exception) -> Unit){
+        viewModelScope.launch {
+            try {
+                db.collection("routes").document(userId).collection("routes").get()
+                    .addOnSuccessListener {
+                        val routeList = mutableListOf<Route>()
+                        it?.let{
+                            for (i in it.documents){
+                                val img = i.getString("img")
+                                val distance = i.getDouble("distance")?.toFloat() ?: 0f
+                                val duration = i.getLong("duration") ?: 0
+                                val avgSpeed = i.getDouble("avgSpeed")?.toFloat() ?: 0f
+                                val timestamp = i.getLong("timestamp") ?: 0
+
+                                val route = Route(img, distance, duration, avgSpeed, timestamp)
+                                routeList.add(route)
+                            }
+                            Log.d(TAG, "Route successfully get!")
+                            onSuccess(routeList)
+                        }
+                    }
+                    .addOnFailureListener {
+                        Log.e(TAG, it.message, it)
+                        onFailure(it)
+                    }
+            } catch (ex: Exception){
+                Log.e(TAG, ex.message, ex)
+                onFailure(ex)
             }
         }
     }

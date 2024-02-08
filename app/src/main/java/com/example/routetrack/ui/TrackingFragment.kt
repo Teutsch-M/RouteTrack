@@ -180,7 +180,7 @@ class TrackingFragment : Fragment() {
             for (coord in line)
                 bounds.include(coord)
 
-        map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), mapView.width, mapView.height, (mapView.height * 0.25).toInt()))
+        map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), mapView.width, mapView.height, (mapView.height * 0.15).toInt()))
     }
 
     private fun updateTracking(isTracking: Boolean){
