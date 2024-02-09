@@ -45,6 +45,7 @@ class TrackingService: LifecycleService() {
     private val TAG = "TrackingService"
     private var isNewRoute = true
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var currentNotification: NotificationCompat.Builder
     private val notificationTime = MutableLiveData<Long>()
     private var isTiming = false
     private var isServiceStopped = false
@@ -52,6 +53,7 @@ class TrackingService: LifecycleService() {
     private var passedTime = 0L
     private var totalTime = 0L
     private var lastSec = 0L
+
 
     companion object{
         val coordinates = MutableLiveData<MutableList<MutableList<LatLng>>>()
@@ -65,6 +67,7 @@ class TrackingService: LifecycleService() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         isTracking.observe(this, Observer {
             updateLocation(it)
+            updateNotification(it)
         })
     }
 
@@ -121,7 +124,44 @@ class TrackingService: LifecycleService() {
             .setSmallIcon(R.drawable.baseline_directions_car_24)
             .setContentIntent(getTrackingFrag())
 
+        currentNotification = notificationBuilder
+
         startForeground(NOTIFICATION_ID, notificationBuilder.build())
+
+        notificationTime.observe(this) {
+            val notification = currentNotification.setContentText(TrackingUtility.formatTime(it * 1000L, false))
+            notificationManager.notify(NOTIFICATION_ID, notification.build())
+        }
+    }
+
+    private fun updateNotification(isTracking: Boolean){
+        val actionText = if (isTracking) "Pause"
+            else "Resume"
+        val intent = if (isTracking) {
+            val pause = Intent(this, TrackingService::class.java).apply {
+                action = ACTION_PAUSE_SERVICE
+            }
+            PendingIntent.getService(this, 1, pause, FLAG_UPDATE_CURRENT)
+        }
+        else {
+            val resume = Intent(this, TrackingService::class.java).apply {
+                action = ACTION_START_RESUME_SERVICE
+            }
+            PendingIntent.getService(this, 2, resume, FLAG_UPDATE_CURRENT)
+        }
+
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        //remove actions from notification before updating with new
+        currentNotification.javaClass.getDeclaredField("mActions").apply {
+            isAccessible = true
+            set(currentNotification, ArrayList<NotificationCompat.Action>())
+        }
+
+        currentNotification
+            .addAction(R.drawable.outline_play_pause_24, actionText, intent)
+        notificationManager.notify(NOTIFICATION_ID, currentNotification.build())
+
     }
 
     private fun getTrackingFrag() = PendingIntent.getActivity(

@@ -25,6 +25,31 @@ object TrackingUtility {
         )
     }
 
+    fun hasPermissions(context: Context) = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+        EasyPermissions.hasPermissions(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+    }
+    else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+        EasyPermissions.hasPermissions(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+            Manifest.permission.POST_NOTIFICATIONS
+        )
+    }
+    else{
+        EasyPermissions.hasPermissions(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_BACKGROUND_LOCATION
+        )
+    }
+
     fun formatTime(ms: Long, includeMillis: Boolean): String {
         var milliSec = ms
         val hours = milliSec / (1000*60*24)
