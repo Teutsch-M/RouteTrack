@@ -60,7 +60,7 @@ class SummaryFragment : Fragment() {
                 return@observe
             }
             else {
-                monthlyDistance.text = "$it km"
+                monthlyDistance.text = String.format("%.2f km", it)
             }
         }
 

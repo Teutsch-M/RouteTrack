@@ -50,11 +50,11 @@ class RouteAdapter(
                 .into(holder.image)
         }
 
-        holder.distance.text ="${currentRoute.distance} km"
+        holder.distance.text = String.format("%.2f km", currentRoute.distance)
         holder.time.text = TrackingUtility.formatTime(currentRoute.duration, false)
         holder.avgSpeed.text = "${currentRoute.avgSpeed} km/h"
 
-        val sdf = SimpleDateFormat("yy.MM.dd", Locale.getDefault())
+        val sdf = SimpleDateFormat("dd.MM.yy", Locale.getDefault())
         val date = Date(currentRoute.timestamp)
 
         holder.date.text = sdf.format(date)
