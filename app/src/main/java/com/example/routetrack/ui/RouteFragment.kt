@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.Spinner
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -32,6 +34,7 @@ class RouteFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private val viewModel: RouteViewModel by viewModels()
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RouteAdapter
+    private lateinit var spinner: Spinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +53,7 @@ class RouteFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
         view?.apply {
             requestPermissions()
+            initializeView(this)
         }
 
         return view
@@ -58,17 +62,37 @@ class RouteFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getRoutes({ routeList ->
-            recyclerView = view.findViewById(R.id.route_recyclerView)
-            adapter = RouteAdapter(requireContext(), routeList)
-            recyclerView.adapter = adapter
-            recyclerView.layoutManager = LinearLayoutManager(context)
-            recyclerView.setHasFixedSize(true)
-        }, {
-            Log.e(TAG,it.message,it)
-        })
+
+        viewModel.routeList.observe(viewLifecycleOwner){
+            if (it == null)
+                return@observe
+            else {
+                adapter = RouteAdapter(requireContext(), it)
+                recyclerView.adapter = adapter
+                recyclerView.layoutManager = LinearLayoutManager(context)
+
+                spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                        when (position) {
+                            0 -> viewModel.getDataForSpinner("timestamp")
+                            1 -> viewModel.getDataForSpinner("distance")
+                            2 -> viewModel.getDataForSpinner("duration")
+                            3 -> viewModel.getDataForSpinner("avgSpeed")
+                        }
+                    }
+
+                    override fun onNothingSelected(p0: AdapterView<*>?) {}
+                }
+            }
+        }
+
     }
 
+
+    private fun initializeView(view: View) {
+        recyclerView = view.findViewById(R.id.route_recyclerView)
+        spinner = view.findViewById(R.id.route_filter)
+    }
 
     private fun requestPermissions(){
         if (TrackingUtility.hasPermissions(requireContext()))

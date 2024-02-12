@@ -10,7 +10,7 @@
     <Spinner
         android:id="@+id/route_filter"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginTop="4dp"
         android:entries="@array/filter_options"
         android:padding="8dp"
@@ -32,7 +32,8 @@
         android:id="@+id/route_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="15dp"
+        android:layout_marginTop="10dp"
+        android:padding="20dp"
         tools:listitem="@layout/item_route"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/route_filter"
