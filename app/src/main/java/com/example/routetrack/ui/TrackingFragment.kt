@@ -187,11 +187,11 @@ class TrackingFragment : Fragment() {
 
     private fun updateTracking(isTracking: Boolean){
         this.isTracking = isTracking
-        if (!isTracking){
+        if (!isTracking && routeTime > 0){
             buttonTimer.text = "Start"
             buttonFinish.visibility = View.VISIBLE
         }
-        else{
+        else if (isTracking){
             buttonTimer.text = "STOP"
             buttonFinish.visibility = View.GONE
         }

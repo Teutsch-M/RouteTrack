@@ -126,7 +126,7 @@ class TrackingService: LifecycleService() {
 
         currentNotification = notificationBuilder
 
-        startForeground(NOTIFICATION_ID, notificationBuilder.build())
+        startForeground(NOTIFICATION_ID, currentNotification.build())
 
         notificationTime.observe(this) {
             val notification = currentNotification.setContentText(TrackingUtility.formatTime(it * 1000L, false))
