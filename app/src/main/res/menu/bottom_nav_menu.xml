@@ -12,9 +12,26 @@
         />
 
     <item
+        android:id="@+id/refuelFragment"
+        android:title="@string/refuel"
+        android:icon="@drawable/baseline_local_gas_station_24"
+        />
+
+    <item
+        android:id="@+id/trackingFragment"
+        android:title=""
+        />
+
+    <item
         android:id="@+id/summaryFragment"
         android:title="@string/summary"
         android:icon="@drawable/baseline_insert_chart_24"
+        />
+
+    <item
+        android:id="@+id/settingsFragment"
+        android:title="@string/settings"
+        android:icon="@drawable/baseline_settings_24"
         />
 
 </menu>

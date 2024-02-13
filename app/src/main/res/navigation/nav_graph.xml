@@ -29,4 +29,27 @@
         android:name="com.example.routetrack.ui.SummaryFragment"
         android:label="fragment_summary"
         tools:layout="@layout/fragment_summary" />
+    <fragment
+        android:id="@+id/refuelFragment"
+        android:name="com.example.routetrack.ui.RefuelFragment"
+        android:label="fragment_refuel"
+        tools:layout="@layout/fragment_refuel" >
+        <action
+            android:id="@+id/action_refuelFragment_to_addRefuelFragment"
+            app:destination="@id/addRefuelFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.routetrack.ui.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/addRefuelFragment"
+        android:name="com.example.routetrack.ui.AddRefuelFragment"
+        android:label="fragment_add_refuel"
+        tools:layout="@layout/fragment_add_refuel" >
+        <action
+            android:id="@+id/action_addRefuelFragment_to_refuelFragment"
+            app:destination="@id/refuelFragment" />
+    </fragment>
 </navigation>

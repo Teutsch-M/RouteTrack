@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
 
         navHostFragment.findNavController().addOnDestinationChangedListener{_,destination,_ ->
             when(destination.id){
-                R.id.routeFragment, R.id.summaryFragment -> {
+                R.id.routeFragment, R.id.refuelFragment, R.id.summaryFragment, R.id.settingsFragment -> {
                     navigationView.visibility = View.VISIBLE
                     floatingButton.visibility = View.VISIBLE
                     appBar.visibility = View.VISIBLE

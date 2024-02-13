@@ -25,6 +25,19 @@ object TrackingUtility {
         )
     }
 
+    fun hasCameraPermissions(context: Context) = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        EasyPermissions.hasPermissions(
+            context,
+            Manifest.permission.CAMERA
+        )
+    } else {
+        EasyPermissions.hasPermissions(
+            context,
+            Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
+    }
+
     fun hasPermissions(context: Context) = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
         EasyPermissions.hasPermissions(
             context,
