@@ -70,6 +70,7 @@ class RouteFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                 adapter = RouteAdapter(requireContext(), it)
                 recyclerView.adapter = adapter
                 recyclerView.layoutManager = LinearLayoutManager(context)
+                recyclerView.hasFixedSize()
 
                 spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
                     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {

@@ -9,23 +9,23 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.example.routetrack.MainActivity
 import com.example.routetrack.R
+import com.example.routetrack.ui.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 
 class LoginFragment : Fragment() {
-    // TODO: Rename and change types of parameters
+
     private var param1: String? = null
     private var param2: String? = null
+    private val viewModel: UserViewModel by viewModels()
     private lateinit var loginEmail: EditText
     private lateinit var loginPassword: EditText
     private lateinit var loginButton: Button
@@ -65,14 +65,19 @@ class LoginFragment : Fragment() {
             if (email.isEmpty() || password.isEmpty())
                 Toast.makeText(activity,"Fill the missing fields!",Toast.LENGTH_SHORT).show()
             else{
-                firebaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener {
-                    if (it.isSuccessful){
+                viewModel.login(email, password)
+                viewModel.loginResponse.observe(viewLifecycleOwner, Observer { loginSuccess ->
+                    if (loginSuccess == null)
+                        return@Observer
+                    else if (loginSuccess){
                         val intent = Intent(this@LoginFragment.requireContext(), MainActivity::class.java)
                         startActivity(intent)
+                        requireActivity().finish()
                     }
-                    else
+                    else {
                         Toast.makeText(activity,"Invalid or expired credentials!",Toast.LENGTH_SHORT).show()
-                }
+                    }
+                })
             }
         }
     }
