@@ -38,8 +38,42 @@
         android:id="@+id/text_totalTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="220dp"
+        android:layout_marginBottom="50dp"
         android:text="@string/total_time_this_month"
         />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/totalFuel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/_0l"
+        android:textSize="40sp"
+        />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/text_totalFuel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:text="@string/total_fuel_this_month"
+        />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/totalFuelCost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/_0ron"
+        android:textSize="40sp"
+        />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/text_totalFuelCost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="150dp"
+        android:text="@string/total_fuel_cost_this_month"
+        />
+
+
 
 </LinearLayout>

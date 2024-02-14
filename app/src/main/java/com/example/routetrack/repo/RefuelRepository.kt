@@ -2,6 +2,7 @@ package com.example.routetrack.repo
 
 import android.util.Log
 import com.example.routetrack.database.Refuel
+import com.example.routetrack.utility.SummaryUtility
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -38,6 +39,64 @@ class RefuelRepository {
             .addOnFailureListener {  ex ->
                 Log.e(TAG, ex.message, ex)
             }
+    }
+
+    fun getMonthlyFuel(callback: (Float) -> Unit) {
+        refuelCollection
+            .whereGreaterThanOrEqualTo("timestamp", SummaryUtility.getMonthStart(SummaryUtility.currentMonth))
+            .whereLessThanOrEqualTo("timestamp", SummaryUtility.getMonthEnd(SummaryUtility.currentMonth))
+            .get()
+            .addOnSuccessListener {  query ->
+                val refuelList = mutableListOf<Refuel>()
+                for (doc in query.documents) {
+                    val refuel = doc.toObject(Refuel::class.java)
+                    refuel?.let {
+                        refuelList.add(it)
+                    }
+                }
+                val fuel = calcMonthlyFuel(refuelList)
+                callback(fuel)
+            }
+            .addOnFailureListener {  ex ->
+                Log.e(TAG, ex.message, ex)
+            }
+    }
+
+    private fun calcMonthlyFuel(refuels: List<Refuel>): Float {
+        var totalFuel = 0F
+        for (i in refuels){
+            totalFuel += i.liter
+        }
+        return totalFuel
+    }
+
+    fun getMonthlyFuelCost(callback: (Float) -> Unit) {
+        refuelCollection
+            .whereGreaterThanOrEqualTo("timestamp", SummaryUtility.getMonthStart(SummaryUtility.currentMonth))
+            .whereLessThanOrEqualTo("timestamp", SummaryUtility.getMonthEnd(SummaryUtility.currentMonth))
+            .get()
+            .addOnSuccessListener {  query ->
+                val refuelList = mutableListOf<Refuel>()
+                for (doc in query.documents) {
+                    val refuel = doc.toObject(Refuel::class.java)
+                    refuel?.let {
+                        refuelList.add(it)
+                    }
+                }
+                val fuelCost = calcMonthlyFuelCost(refuelList)
+                callback(fuelCost)
+            }
+            .addOnFailureListener {  ex ->
+                Log.e(TAG, ex.message, ex)
+            }
+    }
+
+    private fun calcMonthlyFuelCost(refuels: List<Refuel>): Float {
+        var totalFuelCost = 0F
+        for (i in refuels){
+            totalFuelCost += i.price
+        }
+        return totalFuelCost
     }
 
 }

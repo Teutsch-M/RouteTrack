@@ -28,6 +28,10 @@
     <string name="liter">Liter</string>
     <string name="add">Add</string>
     <string name="add_image">Add image</string>
+    <string name="_0l">0L</string>
+    <string name="total_fuel_this_month">Total Fuel This Month</string>
+    <string name="_0ron">0RON</string>
+    <string name="total_fuel_cost_this_month">Total Fuel Cost This Month</string>
     <string-array name="filter_options">
         <item>Date</item>
         <item>Distance</item>

@@ -22,9 +22,11 @@ class SummaryFragment : Fragment() {
 
     private var param1: String? = null
     private var param2: String? = null
+    private val viewModel: SummaryViewModel by viewModels()
     private lateinit var monthlyDistance: TextView
     private lateinit var monthlyTime: TextView
-    private val viewModel: SummaryViewModel by viewModels()
+    private lateinit var monthlyFuel: TextView
+    private lateinit var monthlyFuelCost: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,12 +75,31 @@ class SummaryFragment : Fragment() {
                 monthlyTime.text = TrackingUtility.formatTime(it, false)
             }
         }
+
+        viewModel.getMonthlyFuel()
+        viewModel.monthlyFuel.observe(viewLifecycleOwner) {
+            if (it == null)
+                return@observe
+            else
+                monthlyFuel.text = String.format("%.2f L", it)
+        }
+
+        viewModel.getMonthlyFuelCost()
+        viewModel.monthlyFuelCost.observe(viewLifecycleOwner) {
+            if (it == null)
+                return@observe
+            else
+                monthlyFuelCost.text = String.format("%.2f RON", it)
+        }
+
     }
 
 
     private fun initializeView(view: View) {
         monthlyDistance = view.findViewById(R.id.totalDistance)
         monthlyTime = view.findViewById(R.id.totalTime)
+        monthlyFuel = view.findViewById(R.id.totalFuel)
+        monthlyFuelCost = view.findViewById(R.id.totalFuelCost)
     }
 
 
