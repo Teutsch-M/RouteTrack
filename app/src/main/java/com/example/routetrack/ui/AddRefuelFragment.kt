@@ -11,14 +11,21 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.example.routetrack.R
+import com.example.routetrack.database.Converter
+import com.example.routetrack.database.Refuel
+import com.example.routetrack.ui.viewmodels.RefuelViewModel
 import com.example.routetrack.utility.Constants
 import com.example.routetrack.utility.TrackingUtility
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
+import java.util.Calendar
 
 
 private const val ARG_PARAM1 = "param1"
@@ -29,12 +36,14 @@ class AddRefuelFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     private var param1: String? = null
     private var param2: String? = null
+    private val TAG = "AddRefuelFragment"
     private lateinit var imgView: ImageView
     private lateinit var addImage: Button
     private lateinit var addLiter: EditText
     private lateinit var addPrice: EditText
     private lateinit var addRefuel: Button
     private var capturedImageUri: Uri? = null
+    private val viewModel: RefuelViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,6 +83,40 @@ class AddRefuelFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         addImage.setOnClickListener {
             requestPermissions()
             takePictureLauncher.launch(capturedImageUri)
+        }
+        addRefuel.setOnClickListener {
+            if (addLiter.text.isEmpty() || addPrice.text.isEmpty()){
+                Toast.makeText(activity, "Fill the liter and price fields!", Toast.LENGTH_SHORT).show()
+            }
+            else if (imgView.drawable == null){
+                val liter = addLiter.text.toString().toFloat()
+                val price = addPrice.text.toString().toFloat()
+                val date = Calendar.getInstance().timeInMillis
+                val refuel = Refuel(
+                    null,
+                    liter,
+                    price,
+                    date
+                )
+                viewModel.addRefuel(refuel)
+                Toast.makeText(activity, "Refuel successfully added!", Toast.LENGTH_LONG).show()
+                findNavController().navigate(R.id.action_addRefuelFragment_to_refuelFragment)
+            }
+            else {
+                val img = Converter.fromUri(requireContext(), capturedImageUri)
+                val liter = addLiter.text.toString().toFloat()
+                val price = addPrice.text.toString().toFloat()
+                val date = Calendar.getInstance().timeInMillis
+                val refuel = Refuel(
+                    img,
+                    liter,
+                    price,
+                    date
+                )
+                viewModel.addRefuel(refuel)
+                Toast.makeText(activity, "Refuel successfully added!", Toast.LENGTH_LONG).show()
+                findNavController().navigate(R.id.action_addRefuelFragment_to_refuelFragment)
+            }
         }
     }
 
