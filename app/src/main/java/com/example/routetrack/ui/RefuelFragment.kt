@@ -5,11 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.routetrack.R
+import com.example.routetrack.adapters.RefuelAdapter
+import com.example.routetrack.ui.viewmodels.RefuelViewModel
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 private const val ARG_PARAM1 = "param1"
@@ -20,8 +23,10 @@ class RefuelFragment : Fragment() {
 
     private var param1: String? = null
     private var param2: String? = null
+    private val viewModel: RefuelViewModel by viewModels()
     private lateinit var recyclerView: RecyclerView
     private lateinit var addRefuel: ExtendedFloatingActionButton
+    private lateinit var adapter: RefuelAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +50,24 @@ class RefuelFragment : Fragment() {
         }
 
         return view
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.refuelList.observe(viewLifecycleOwner) {
+            if (it == null) {
+                return@observe
+            }
+            else {
+                adapter = RefuelAdapter(requireContext(), it)
+                recyclerView.adapter = adapter
+                recyclerView.layoutManager = LinearLayoutManager(context)
+                recyclerView.hasFixedSize()
+            }
+        }
+
     }
 
 
