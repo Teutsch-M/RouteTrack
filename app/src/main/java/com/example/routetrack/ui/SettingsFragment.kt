@@ -54,12 +54,7 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val identifier = FirebaseAuth.getInstance().currentUser!!.displayName
-        if (identifier != null)
-            identifierText.text = identifier
-        else
-            identifierText.text = FirebaseAuth.getInstance().currentUser!!.email
-
+        identifierText.text = FirebaseAuth.getInstance().currentUser!!.email
 
     }
 

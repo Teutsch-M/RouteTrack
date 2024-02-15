@@ -15,7 +15,6 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -27,8 +26,8 @@
         android:theme="@style/Theme.RouteTrack"
         tools:targetApi="31">
         <activity
-            android:name=".LoginActivity"
-            android:exported="true">
+            android:name=".SplashScreenActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,12 +35,15 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".LoginActivity"
+            android:exported="false"/>
+        <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:launchMode="singleTask">
-        </activity>
+            android:launchMode="singleTask" />
 
-        <service android:name=".services.TrackingService"
+        <service
+            android:name=".services.TrackingService"
             android:foregroundServiceType="location" />
 
         <meta-data
@@ -50,18 +52,16 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-        
+
         <provider
-            android:authorities="com.example.routetrack.fileprovider"
             android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.routetrack.fileprovider"
             android:exported="false"
-            android:grantUriPermissions="true"
-            >
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-        
     </application>
 
 </manifest>

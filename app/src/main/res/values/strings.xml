@@ -32,6 +32,8 @@
     <string name="total_fuel_this_month">Total Fuel This Month</string>
     <string name="_0ron">0RON</string>
     <string name="total_fuel_cost_this_month">Total Fuel Cost This Month</string>
+    <string name="routetrack">RouteTrack</string>
+    <string name="splash_icon">Splash icon</string>
     <string-array name="filter_options">
         <item>Date</item>
         <item>Distance</item>
