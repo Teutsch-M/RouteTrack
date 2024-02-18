@@ -35,6 +35,10 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.GeoPoint
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -53,6 +57,9 @@ class TrackingService: LifecycleService() {
     private var passedTime = 0L
     private var totalTime = 0L
     private var lastSec = 0L
+    private val db = FirebaseFirestore.getInstance()
+    private val userId = FirebaseAuth.getInstance().currentUser!!.uid
+    private val docRef = db.collection("routes").document(userId)
 
 
     companion object{
@@ -203,6 +210,16 @@ class TrackingService: LifecycleService() {
                     for (location in it) {
                         addCoordinates(location)
                         Log.d(TAG, "New coordinate: ${location.latitude}, ${location.longitude}")
+                        val userLocation: Map<String, Any> = hashMapOf(
+                            "userLocation" to GeoPoint(location.latitude, location.longitude)
+                        )
+                        docRef.set(userLocation, SetOptions.merge())
+                            .addOnSuccessListener {
+                                Log.d(TAG, "Location updated!")
+                            }
+                            .addOnFailureListener {  ex ->
+                                Log.e(TAG, ex.message, ex)
+                            }
                     }
                 }
             }

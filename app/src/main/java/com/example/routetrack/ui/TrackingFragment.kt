@@ -28,7 +28,10 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Calendar
 import kotlin.math.round
 
@@ -51,6 +54,8 @@ class TrackingFragment : Fragment() {
     private var isTracking = false
     private var coordinates = mutableListOf<MutableList<LatLng>>()
     private var routeTime: Long = 0
+    private val db = FirebaseFirestore.getInstance()
+    private val userId = FirebaseAuth.getInstance().currentUser!!.uid
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,6 +80,23 @@ class TrackingFragment : Fragment() {
         mapView.getMapAsync {
             map = it
             addAllLine()
+            db.collection("routes").get()
+                .addOnSuccessListener { documents ->
+                    for (doc in documents){
+                        if (doc.id != userId) {
+                            val geoPoint = doc.getGeoPoint("userLocation")
+                            if (geoPoint != null) {
+                                val latitude = geoPoint.latitude
+                                val longitude = geoPoint.longitude
+                                val latLng = LatLng(latitude, longitude)
+                                it.addMarker(MarkerOptions().position(latLng).title(doc.id))
+                            }
+                        }
+                    }
+                }
+                .addOnFailureListener {  ex ->
+                    Log.e(TAG, ex.message, ex)
+                }
         }
 
         mapView.onCreate(savedInstanceState)
