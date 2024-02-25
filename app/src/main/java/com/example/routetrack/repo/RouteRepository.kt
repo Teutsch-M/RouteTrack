@@ -53,6 +53,28 @@ class RouteRepository {
             }
     }
 
+    fun getMonthlyDistanceVehicle(vehicleType: Int, callback: (Float) -> Unit) {
+        routesCollection
+            .whereEqualTo("vehicle", vehicleType)
+            .whereGreaterThanOrEqualTo("timestamp", SummaryUtility.getMonthStart(SummaryUtility.currentMonth))
+            .whereLessThanOrEqualTo("timestamp", SummaryUtility.getMonthEnd(SummaryUtility.currentMonth))
+            .get()
+            .addOnSuccessListener {  query ->
+                val routeList = mutableListOf<Route>()
+                for (doc in query.documents) {
+                    val route = doc.toObject(Route::class.java)
+                    route?.let {
+                        routeList.add(it)
+                    }
+                }
+                val distance = calcMonthlyDistance(routeList)
+                callback(distance)
+            }
+            .addOnFailureListener {  ex ->
+                Log.e(TAG, ex.message, ex)
+            }
+    }
+
     private fun calcMonthlyDistance(routes: List<Route>): Float {
         var totalDistance = 0F
         for (i in routes){
@@ -63,6 +85,28 @@ class RouteRepository {
 
     fun getMonthlyTime(callback: (Long) -> Unit) {
         routesCollection
+            .whereGreaterThanOrEqualTo("timestamp", SummaryUtility.getMonthStart(SummaryUtility.currentMonth))
+            .whereLessThanOrEqualTo("timestamp", SummaryUtility.getMonthEnd(SummaryUtility.currentMonth))
+            .get()
+            .addOnSuccessListener {  query ->
+                val routeList = mutableListOf<Route>()
+                for (doc in query.documents) {
+                    val route = doc.toObject(Route::class.java)
+                    route?.let {
+                        routeList.add(it)
+                    }
+                }
+                val time = calcMonthlyTime(routeList)
+                callback(time)
+            }
+            .addOnFailureListener {  ex ->
+                Log.e(TAG, ex.message, ex)
+            }
+    }
+
+    fun getMonthlyTimeVehicle(vehicleType: Int, callback: (Long) -> Unit) {
+        routesCollection
+            .whereEqualTo("vehicle", vehicleType)
             .whereGreaterThanOrEqualTo("timestamp", SummaryUtility.getMonthStart(SummaryUtility.currentMonth))
             .whereLessThanOrEqualTo("timestamp", SummaryUtility.getMonthEnd(SummaryUtility.currentMonth))
             .get()

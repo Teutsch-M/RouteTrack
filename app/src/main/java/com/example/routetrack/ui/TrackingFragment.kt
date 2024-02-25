@@ -8,7 +8,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.Button
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.viewModels
@@ -50,7 +52,10 @@ class TrackingFragment : Fragment() {
     private lateinit var buttonTimer: Button
     private lateinit var buttonFinish: Button
     private lateinit var timerText: TextView
+    private lateinit var vehicleText: TextView
+    private lateinit var spinner: Spinner
     private var map: GoogleMap? = null
+    private var vehicle: Int = 0
     private var isTracking = false
     private var coordinates = mutableListOf<MutableList<LatLng>>()
     private var routeTime: Long = 0
@@ -106,6 +111,21 @@ class TrackingFragment : Fragment() {
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                when (position) {
+                    0 -> vehicle = 0
+                    1 -> vehicle = 1
+                    2 -> vehicle = 2
+                }
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
+        }
+    }
 
 
     override fun onStart() {
@@ -117,6 +137,7 @@ class TrackingFragment : Fragment() {
         super.onResume()
         mapView.onResume()
         addAllLine()
+        observeData()
     }
 
     override fun onPause() {
@@ -149,10 +170,14 @@ class TrackingFragment : Fragment() {
         buttonTimer = view.findViewById(R.id.buttonTimer)
         buttonFinish = view.findViewById(R.id.button_finishRoute)
         timerText = view.findViewById(R.id.timer)
+        vehicleText = view.findViewById(R.id.vehicleText)
+        spinner = view.findViewById(R.id.vehicleOption)
     }
 
     private fun registerListeners(view: View){
         buttonTimer.setOnClickListener {
+            vehicleText.visibility = View.GONE
+            spinner.visibility = View.GONE
             commandService(if (isTracking)
                 ACTION_PAUSE_SERVICE
             else
@@ -212,10 +237,14 @@ class TrackingFragment : Fragment() {
         if (!isTracking && routeTime > 0){
             buttonTimer.text = "Start"
             buttonFinish.visibility = View.VISIBLE
+            vehicleText.visibility = View.GONE
+            spinner.visibility = View.GONE
         }
         else if (isTracking){
             buttonTimer.text = "STOP"
             buttonFinish.visibility = View.GONE
+            vehicleText.visibility = View.GONE
+            spinner.visibility = View.GONE
         }
     }
 
@@ -247,6 +276,7 @@ class TrackingFragment : Fragment() {
             val avgSpeed = round((distance / (routeTime / 1000f / 60 / 60)) * 10) / 10f
             val date = Calendar.getInstance().timeInMillis
             val route = Route(
+                vehicle,
                 img,
                 distance,
                 routeTime,

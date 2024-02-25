@@ -24,6 +24,7 @@ class RouteAdapter(
     RecyclerView.Adapter<RouteAdapter.RouteViewHolder>() {
 
     inner class RouteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val vehicleImage: ImageView = itemView.findViewById(R.id.item_vehicleImage)
         val image: ImageView = itemView.findViewById(R.id.item_routeImage)
         val distance: TextView = itemView.findViewById(R.id.item_routeDistance)
         val time: TextView = itemView.findViewById(R.id.item_routeTime)
@@ -40,6 +41,23 @@ class RouteAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: RouteViewHolder, position: Int) {
         val currentRoute = routeList[position]
+
+        when (currentRoute.vehicle) {
+            0 -> Glide
+                .with(context)
+                .load(R.drawable.baseline_directions_car_24)
+                .into(holder.vehicleImage)
+
+            1 -> Glide
+                .with(context)
+                .load(R.drawable.baseline_directions_bike_24)
+                .into(holder.vehicleImage)
+
+            2 -> Glide
+                .with(context)
+                .load(R.drawable.baseline_directions_walk_24)
+                .into(holder.vehicleImage)
+        }
 
         val img = currentRoute.img?.let { Converter.toBitmap(it) }
 

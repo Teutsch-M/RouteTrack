@@ -46,11 +46,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/start"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/vehicleText"
             app:layout_constraintEnd_toStartOf="@+id/button_finishRoute"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/timer"
-            />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/timer" />
 
 
         <com.google.android.material.button.MaterialButton
@@ -59,11 +58,35 @@
             android:layout_height="wrap_content"
             android:text="@string/finish_route"
             android:visibility="gone"
+            android:layout_marginTop="18dp"
             app:layout_constraintStart_toEndOf="@+id/buttonTimer"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/vehicleText"
             app:layout_constraintTop_toBottomOf="@+id/timer"
             />
+
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/vehicleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/vehicle"
+            android:textSize="30sp"
+            android:layout_marginStart="100dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/vehicleOption"
+            app:layout_constraintTop_toBottomOf="@+id/buttonTimer" />
+
+        <Spinner
+            android:id="@+id/vehicleOption"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:padding="8dp"
+            android:entries="@array/vehicle_options"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/vehicleText"
+            app:layout_constraintTop_toBottomOf="@+id/buttonTimer" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

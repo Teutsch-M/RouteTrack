@@ -29,8 +29,20 @@ class SummaryViewModel: ViewModel() {
         }
     }
 
+    fun getMonthlyDistanceVehicle(vehicleType: Int){
+        routeRepo.getMonthlyDistanceVehicle(vehicleType) {
+            _monthlyDistance.postValue(it)
+        }
+    }
+
     fun getMonthlyTime(){
         routeRepo.getMonthlyTime {
+            _monthlyTime.postValue(it)
+        }
+    }
+
+    fun getMonthlyTimeVehicle(vehicleType: Int){
+        routeRepo.getMonthlyTimeVehicle(vehicleType) {
             _monthlyTime.postValue(it)
         }
     }

@@ -34,10 +34,23 @@
     <string name="total_fuel_cost_this_month">Total Fuel Cost This Month</string>
     <string name="routetrack">RouteTrack</string>
     <string name="splash_icon">Splash icon</string>
+    <string name="vehicle">Vehicle:</string>
+    <string name="choose_vehicle">Choose vehicle:</string>
     <string-array name="filter_options">
         <item>Date</item>
         <item>Distance</item>
         <item>Duration</item>
         <item>Average speed</item>
+    </string-array>
+    <string-array name="vehicle_options">
+        <item>Car</item>
+        <item>Bike</item>
+        <item>Walk</item>
+    </string-array>
+    <string-array name="vehicle_options2">
+        <item>All</item>
+        <item>Car</item>
+        <item>Bike</item>
+        <item>Walk</item>
     </string-array>
 </resources>

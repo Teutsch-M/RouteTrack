@@ -14,6 +14,15 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
+    <ImageView
+        android:id="@+id/item_vehicleImage"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/item_routeImage"
+        app:layout_constraintEnd_toStartOf="@+id/item_routeDistance"
+        />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/item_routeDistance"
@@ -21,7 +30,7 @@
         android:layout_height="wrap_content"
         android:text="@string/distance"
         android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/item_vehicleImage"
         app:layout_constraintEnd_toStartOf="@+id/item_routeTime"
         app:layout_constraintTop_toBottomOf="@+id/item_routeImage"
         />

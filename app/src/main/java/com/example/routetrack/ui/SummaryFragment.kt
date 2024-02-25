@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -27,6 +29,7 @@ class SummaryFragment : Fragment() {
     private lateinit var monthlyTime: TextView
     private lateinit var monthlyFuel: TextView
     private lateinit var monthlyFuelCost: TextView
+    private lateinit var spinner: Spinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,25 +59,100 @@ class SummaryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getMonthlyDistance()
-        viewModel.monthlyDistance.observe(viewLifecycleOwner) {
-            if (it == null){
-                return@observe
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                when (position) {
+                    0 -> {
+                        viewModel.getMonthlyDistance()
+                        viewModel.monthlyDistance.observe(viewLifecycleOwner) {
+                            if (it == null){
+                                return@observe
+                            }
+                            else {
+                                monthlyDistance.text = String.format("%.2f km", it)
+                            }
+                        }
+
+                        viewModel.getMonthlyTime()
+                        viewModel.monthlyTime.observe(viewLifecycleOwner){
+                            if (it == null){
+                                return@observe
+                            }
+                            else{
+                                monthlyTime.text = TrackingUtility.formatTime(it, false)
+                            }
+                        }
+                    }
+                    1 -> {
+                        viewModel.getMonthlyDistanceVehicle(0)
+                        viewModel.monthlyDistance.observe(viewLifecycleOwner) {
+                            if (it == null){
+                                return@observe
+                            }
+                            else {
+                                monthlyDistance.text = String.format("%.2f km", it)
+                            }
+                        }
+
+                        viewModel.getMonthlyTimeVehicle(0)
+                        viewModel.monthlyTime.observe(viewLifecycleOwner){
+                            if (it == null){
+                                return@observe
+                            }
+                            else{
+                                monthlyTime.text = TrackingUtility.formatTime(it, false)
+                            }
+                        }
+                    }
+                    2 -> {
+                        viewModel.getMonthlyDistanceVehicle(1)
+                        viewModel.monthlyDistance.observe(viewLifecycleOwner) {
+                            if (it == null){
+                                return@observe
+                            }
+                            else {
+                                monthlyDistance.text = String.format("%.2f km", it)
+                            }
+                        }
+
+                        viewModel.getMonthlyTimeVehicle(1)
+                        viewModel.monthlyTime.observe(viewLifecycleOwner){
+                            if (it == null){
+                                return@observe
+                            }
+                            else{
+                                monthlyTime.text = TrackingUtility.formatTime(it, false)
+                            }
+                        }
+                    }
+                    3 -> {
+                        viewModel.getMonthlyDistanceVehicle(2)
+                        viewModel.monthlyDistance.observe(viewLifecycleOwner) {
+                            if (it == null){
+                                return@observe
+                            }
+                            else {
+                                monthlyDistance.text = String.format("%.2f km", it)
+                            }
+                        }
+
+                        viewModel.getMonthlyTimeVehicle(2)
+                        viewModel.monthlyTime.observe(viewLifecycleOwner){
+                            if (it == null){
+                                return@observe
+                            }
+                            else{
+                                monthlyTime.text = TrackingUtility.formatTime(it, false)
+                            }
+                        }
+                    }
+                }
             }
-            else {
-                monthlyDistance.text = String.format("%.2f km", it)
-            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
+
         }
 
-        viewModel.getMonthlyTime()
-        viewModel.monthlyTime.observe(viewLifecycleOwner){
-            if (it == null){
-                return@observe
-            }
-            else{
-                monthlyTime.text = TrackingUtility.formatTime(it, false)
-            }
-        }
 
         viewModel.getMonthlyFuel()
         viewModel.monthlyFuel.observe(viewLifecycleOwner) {
@@ -100,6 +178,7 @@ class SummaryFragment : Fragment() {
         monthlyTime = view.findViewById(R.id.totalTime)
         monthlyFuel = view.findViewById(R.id.totalFuel)
         monthlyFuelCost = view.findViewById(R.id.totalFuelCost)
+        spinner = view.findViewById(R.id.summary_vehicleSpinner)
     }
 
 
