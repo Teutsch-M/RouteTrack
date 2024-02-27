@@ -35,6 +35,7 @@ class RouteFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RouteAdapter
     private lateinit var spinner: Spinner
+    private lateinit var vehicleSpinner: Spinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +73,7 @@ class RouteFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                 recyclerView.layoutManager = LinearLayoutManager(context)
                 recyclerView.hasFixedSize()
 
+                /*
                 spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
                     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                         when (position) {
@@ -84,6 +86,28 @@ class RouteFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
                     override fun onNothingSelected(p0: AdapterView<*>?) {}
                 }
+                */
+
+                vehicleSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                        val sortBy = spinner.selectedItemPosition
+                        viewModel.getSortedRoutes(position, sortBy)
+                    }
+
+                    override fun onNothingSelected(p0: AdapterView<*>?) {}
+                }
+
+               spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                        val vehicleType = vehicleSpinner.selectedItemPosition
+                        viewModel.getSortedRoutes(vehicleType, position)
+                    }
+
+                    override fun onNothingSelected(p0: AdapterView<*>?) {}
+                }
+
+
+
             }
         }
 
@@ -93,6 +117,7 @@ class RouteFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private fun initializeView(view: View) {
         recyclerView = view.findViewById(R.id.route_recyclerView)
         spinner = view.findViewById(R.id.route_filter)
+        vehicleSpinner = view.findViewById(R.id.route_vehicleFilter)
     }
 
     private fun requestPermissions(){

@@ -50,4 +50,40 @@ class RouteViewModel: ViewModel() {
         }
     }
 
+
+    fun getVehicleData(vehicleType: Int) {
+        routeRepo.getVehicleRoutes(vehicleType) {
+            _routeList.postValue(it)
+        }
+    }
+
+
+    fun getSortedRoutes(vehicleType: Int, sortBy: Int) {
+        Log.d(TAG, "$vehicleType $sortBy")
+        viewModelScope.launch {
+            try {
+                val routes: List<Route> = if (vehicleType == 0) {
+                    routeRepo.getRoutes()
+                } else {
+                    routeRepo.getVehicleRoutes2(vehicleType - 1)
+                }
+                Log.d(TAG, "Routes: $routes")
+                val sortedRoutes = when (sortBy) {
+                    0 -> routes.sortedByDescending { it.timestamp }
+                    1 -> routes.sortedByDescending { it.distance }
+                    2 -> routes.sortedByDescending { it.duration }
+                    3 -> routes.sortedByDescending { it.avgSpeed }
+                    else -> routes
+                }
+                Log.d(TAG, "SortedRoutes: $sortedRoutes")
+                _routeList.value = sortedRoutes
+            }
+            catch (ex: Exception) {
+                Log.e(TAG, ex.message, ex)
+            }
+        }
+        Log.d(TAG, "${_routeList.value}")
+    }
+
+
 }

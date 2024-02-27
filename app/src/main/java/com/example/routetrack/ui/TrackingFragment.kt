@@ -1,10 +1,12 @@
 package com.example.routetrack.ui
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +15,7 @@ import android.widget.Button
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -54,6 +57,7 @@ class TrackingFragment : Fragment() {
     private lateinit var timerText: TextView
     private lateinit var vehicleText: TextView
     private lateinit var spinner: Spinner
+    private lateinit var sp: SharedPreferences
     private var map: GoogleMap? = null
     private var vehicle: Int = 0
     private var isTracking = false
@@ -114,17 +118,28 @@ class TrackingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                when (position) {
-                    0 -> vehicle = 0
-                    1 -> vehicle = 1
-                    2 -> vehicle = 2
+        if (!isTracking && routeTime.toInt() == 0) {
+            spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    when (position) {
+                        0 -> vehicle = 0
+                        1 -> vehicle = 1
+                        2 -> vehicle = 2
+                    }
+                    Log.d(TAG, vehicle.toString())
+                    sp.edit().putInt("vehicle", vehicle).apply()
                 }
-            }
 
-            override fun onNothingSelected(p0: AdapterView<*>?) {}
+                override fun onNothingSelected(p0: AdapterView<*>?) {}
+            }
         }
+
+
     }
 
 
@@ -138,6 +153,7 @@ class TrackingFragment : Fragment() {
         mapView.onResume()
         addAllLine()
         observeData()
+        vehicle = sp.getInt("vehicle", 0)
     }
 
     override fun onPause() {
@@ -172,6 +188,7 @@ class TrackingFragment : Fragment() {
         timerText = view.findViewById(R.id.timer)
         vehicleText = view.findViewById(R.id.vehicleText)
         spinner = view.findViewById(R.id.vehicleOption)
+        sp = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
     }
 
     private fun registerListeners(view: View){

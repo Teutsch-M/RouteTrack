@@ -3,8 +3,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="8dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.RouteFragment">
+
+    <TextView
+        android:id="@+id/route_vehicleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/vehicle"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/route_vehicleFilter"
+        />
+
+    <Spinner
+        android:id="@+id/route_vehicleFilter"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:entries="@array/vehicle_options2"
+        android:padding="8dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toEndOf="@+id/route_vehicleText"
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
 
     <Spinner
@@ -22,7 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/sort_by"
-        android:textSize="22sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/route_filter"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/route_filter"

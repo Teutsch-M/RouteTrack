@@ -40,7 +40,7 @@
         <item>Date</item>
         <item>Distance</item>
         <item>Duration</item>
-        <item>Average speed</item>
+        <item>Avg speed</item>
     </string-array>
     <string-array name="vehicle_options">
         <item>Car</item>

@@ -7,6 +7,9 @@ import com.example.routetrack.utility.SummaryUtility
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class RouteRepository {
 
@@ -31,6 +34,72 @@ class RouteRepository {
                 Log.e(TAG, ex.message, ex)
             }
     }
+
+    suspend fun getRoutes(): List<Route> {
+        return withContext(Dispatchers.IO) {
+            val routeList = mutableListOf<Route>()
+            try {
+                val query = routesCollection.get()
+                    .await()
+
+                for (doc in query.documents) {
+                    val route = doc.toObject(Route::class.java)
+                    route?.let {
+                        routeList.add(it)
+                    }
+                }
+            }
+            catch (ex: Exception) {
+                Log.e(TAG, ex.message, ex)
+            }
+
+            routeList
+        }
+    }
+
+    fun getVehicleRoutes(vehicle: Int, callback: (List<Route>) -> Unit) {
+        routesCollection
+            .whereEqualTo("vehicle", vehicle)
+            .get()
+            .addOnSuccessListener {  query ->
+                val routeList = mutableListOf<Route>()
+                for (doc in query.documents) {
+                    val route = doc.toObject(Route::class.java)
+                    route?.let {
+                        routeList.add(it)
+                    }
+                }
+                callback(routeList)
+            }
+            .addOnFailureListener {  ex ->
+                Log.e(TAG, ex.message, ex)
+            }
+    }
+
+    suspend fun getVehicleRoutes2(vehicle: Int): List<Route> {
+        return withContext(Dispatchers.IO) {
+            val routeList = mutableListOf<Route>()
+            try {
+                val query = routesCollection
+                    .whereEqualTo("vehicle", vehicle)
+                    .get()
+                    .await()
+
+                for (doc in query.documents) {
+                    val route = doc.toObject(Route::class.java)
+                    route?.let {
+                        routeList.add(it)
+                    }
+                }
+            }
+            catch (ex: Exception) {
+                Log.e(TAG, ex.message, ex)
+            }
+            routeList
+        }
+
+    }
+
 
     fun getMonthlyDistance(callback: (Float) -> Unit) {
         routesCollection
