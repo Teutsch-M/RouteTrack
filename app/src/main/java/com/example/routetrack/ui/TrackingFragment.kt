@@ -3,6 +3,7 @@ package com.example.routetrack.ui
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -31,8 +32,11 @@ import com.example.routetrack.utility.TrackingUtility
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -59,6 +63,10 @@ class TrackingFragment : Fragment() {
     private lateinit var spinner: Spinner
     private lateinit var sp: SharedPreferences
     private var map: GoogleMap? = null
+    private var marker: Marker? = null
+    private var markerOptions: MarkerOptions? = null
+    private var myPos: LatLng = LatLng(0.0, 0.0)
+    private lateinit var myIcon: BitmapDescriptor
     private var vehicle: Int = 0
     private var isTracking = false
     private var coordinates = mutableListOf<MutableList<LatLng>>()
@@ -86,27 +94,7 @@ class TrackingFragment : Fragment() {
             registerListeners(this)
         }
 
-        mapView.getMapAsync {
-            map = it
-            addAllLine()
-            db.collection("routes").get()
-                .addOnSuccessListener { documents ->
-                    for (doc in documents){
-                        if (doc.id != userId) {
-                            val geoPoint = doc.getGeoPoint("userLocation")
-                            if (geoPoint != null) {
-                                val latitude = geoPoint.latitude
-                                val longitude = geoPoint.longitude
-                                val latLng = LatLng(latitude, longitude)
-                                it.addMarker(MarkerOptions().position(latLng).title(doc.id))
-                            }
-                        }
-                    }
-                }
-                .addOnFailureListener {  ex ->
-                    Log.e(TAG, ex.message, ex)
-                }
-        }
+
 
         mapView.onCreate(savedInstanceState)
 
@@ -127,9 +115,18 @@ class TrackingFragment : Fragment() {
                     id: Long
                 ) {
                     when (position) {
-                        0 -> vehicle = 0
-                        1 -> vehicle = 1
-                        2 -> vehicle = 2
+                        0 -> {
+                            vehicle = 0
+                            marker?.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car))
+                        }
+                        1 -> {
+                            vehicle = 1
+                            marker?.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_bike))
+                        }
+                        2 -> {
+                            vehicle = 2
+                            marker?.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_walk))
+                        }
                     }
                     Log.d(TAG, vehicle.toString())
                     sp.edit().putInt("vehicle", vehicle).apply()
@@ -137,6 +134,32 @@ class TrackingFragment : Fragment() {
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {}
             }
+        }
+
+
+
+        mapView.getMapAsync {
+            map = it
+            addAllLine()
+            db.collection("routes").get()
+                .addOnSuccessListener { documents ->
+                    for (doc in documents){
+                        if (doc.id != userId) {
+                            val geoPoint = doc.getGeoPoint("userLocation")
+                            if (geoPoint != null) {
+                                val latitude = geoPoint.latitude
+                                val longitude = geoPoint.longitude
+                                val latLng = LatLng(latitude, longitude)
+                                it.addMarker(MarkerOptions().position(latLng).title(doc.id))
+                            }
+                        }
+                    }
+                }
+                .addOnFailureListener {  ex ->
+                    Log.e(TAG, ex.message, ex)
+                }
+
+            setMarkerOptions()
         }
 
 
@@ -207,6 +230,35 @@ class TrackingFragment : Fragment() {
         }
     }
 
+    private fun setMarkerOptions() {
+
+        db.collection("routes").document(userId).get()
+            .addOnSuccessListener {
+                when (vehicle) {
+                    0 -> myIcon = BitmapDescriptorFactory.fromResource(R.drawable.ic_car)
+                    1 -> myIcon = BitmapDescriptorFactory.fromResource(R.drawable.ic_bike)
+                    2 -> myIcon = BitmapDescriptorFactory.fromResource(R.drawable.ic_walk)
+                }
+                val geoPoint = it.getGeoPoint("userLocation")
+                if (geoPoint != null) {
+                    val lat = geoPoint.latitude
+                    val long = geoPoint.longitude
+                    myPos = LatLng(lat, long)
+                }
+
+                markerOptions = MarkerOptions()
+                    .icon(myIcon)
+                    .position(myPos)
+                    .title("My Position")
+
+                marker = map?.addMarker(markerOptions!!)
+            }
+            .addOnFailureListener {  ex ->
+                Log.e(TAG, ex.message, ex)
+            }
+
+    }
+
     private fun commandService(action: String) = Intent(requireContext(), TrackingService::class.java).also {
         it.action = action
         requireContext().startService(it)
@@ -222,6 +274,7 @@ class TrackingFragment : Fragment() {
                 .add(bLastCoord)
                 .add(lastCoord)
             map?.addPolyline(lineOptions)
+            marker?.position = LatLng(lastCoord.latitude, lastCoord.longitude)
         }
     }
 
