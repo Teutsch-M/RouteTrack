@@ -29,6 +29,10 @@ class SummaryFragment : Fragment() {
     private lateinit var monthlyTime: TextView
     private lateinit var monthlyFuel: TextView
     private lateinit var monthlyFuelCost: TextView
+    private lateinit var monthlyFuelText: TextView
+    private lateinit var monthlyFuelCostText: TextView
+    private lateinit var monthlyTrip: TextView
+    private lateinit var monthlyTripText: TextView
     private lateinit var spinner: Spinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,6 +86,12 @@ class SummaryFragment : Fragment() {
                                 monthlyTime.text = TrackingUtility.formatTime(it, false)
                             }
                         }
+                        monthlyFuel.visibility = View.VISIBLE
+                        monthlyFuelCost.visibility = View.VISIBLE
+                        monthlyFuelText.visibility = View.VISIBLE
+                        monthlyFuelCostText.visibility = View.VISIBLE
+                        monthlyTrip.visibility = View.GONE
+                        monthlyTripText.visibility = View.GONE
                     }
                     1 -> {
                         viewModel.getMonthlyDistanceVehicle(0)
@@ -103,6 +113,12 @@ class SummaryFragment : Fragment() {
                                 monthlyTime.text = TrackingUtility.formatTime(it, false)
                             }
                         }
+                        monthlyFuel.visibility = View.VISIBLE
+                        monthlyFuelCost.visibility = View.VISIBLE
+                        monthlyFuelText.visibility = View.VISIBLE
+                        monthlyFuelCostText.visibility = View.VISIBLE
+                        monthlyTrip.visibility = View.GONE
+                        monthlyTripText.visibility = View.GONE
                     }
                     2 -> {
                         viewModel.getMonthlyDistanceVehicle(1)
@@ -124,6 +140,23 @@ class SummaryFragment : Fragment() {
                                 monthlyTime.text = TrackingUtility.formatTime(it, false)
                             }
                         }
+
+                        viewModel.getMonthlyTripCount(1)
+                        viewModel.tripCount.observe(viewLifecycleOwner) {
+                            if (it == null) {
+                                return@observe
+                            }
+                            else {
+                                monthlyTrip.text = it.toString()
+                            }
+                        }
+
+                        monthlyFuel.visibility = View.GONE
+                        monthlyFuelCost.visibility = View.GONE
+                        monthlyFuelText.visibility = View.GONE
+                        monthlyFuelCostText.visibility = View.GONE
+                        monthlyTrip.visibility = View.VISIBLE
+                        monthlyTripText.visibility = View.VISIBLE
                     }
                     3 -> {
                         viewModel.getMonthlyDistanceVehicle(2)
@@ -145,6 +178,23 @@ class SummaryFragment : Fragment() {
                                 monthlyTime.text = TrackingUtility.formatTime(it, false)
                             }
                         }
+
+                        viewModel.getMonthlyTripCount(2)
+                        viewModel.tripCount.observe(viewLifecycleOwner) {
+                            if (it == null) {
+                                return@observe
+                            }
+                            else {
+                                monthlyTrip.text = it.toString()
+                            }
+                        }
+
+                        monthlyFuel.visibility = View.GONE
+                        monthlyFuelCost.visibility = View.GONE
+                        monthlyFuelText.visibility = View.GONE
+                        monthlyFuelCostText.visibility = View.GONE
+                        monthlyTrip.visibility = View.VISIBLE
+                        monthlyTripText.visibility = View.VISIBLE
                     }
                 }
             }
@@ -179,6 +229,10 @@ class SummaryFragment : Fragment() {
         monthlyFuel = view.findViewById(R.id.totalFuel)
         monthlyFuelCost = view.findViewById(R.id.totalFuelCost)
         spinner = view.findViewById(R.id.summary_vehicleSpinner)
+        monthlyFuelText = view.findViewById(R.id.text_totalFuel)
+        monthlyFuelCostText = view.findViewById(R.id.text_totalFuelCost)
+        monthlyTrip = view.findViewById(R.id.totalTrip)
+        monthlyTripText = view.findViewById(R.id.text_totalTrip)
     }
 
 

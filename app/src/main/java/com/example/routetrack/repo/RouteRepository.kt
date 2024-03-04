@@ -1,7 +1,6 @@
 package com.example.routetrack.repo
 
 import android.util.Log
-import com.example.routetrack.database.Refuel
 import com.example.routetrack.database.Route
 import com.example.routetrack.utility.SummaryUtility
 import com.google.firebase.auth.FirebaseAuth
@@ -55,6 +54,28 @@ class RouteRepository {
 
             routeList
         }
+    }
+
+    suspend fun getMonthlyTripCount(vehicleType: Int): Int {
+        return withContext(Dispatchers.IO) {
+            var count = 0
+            try {
+                val query = routesCollection
+                    .whereEqualTo("vehicle", vehicleType)
+                    .whereGreaterThanOrEqualTo("timestamp", SummaryUtility.getMonthStart(SummaryUtility.currentMonth))
+                    .whereLessThanOrEqualTo("timestamp", SummaryUtility.getMonthEnd(SummaryUtility.currentMonth))
+                    .get()
+                    .await()
+
+                count = query.size()
+            }
+            catch (ex: Exception) {
+                Log.e(TAG, ex.message, ex)
+            }
+
+            count
+        }
+
     }
 
     fun getVehicleRoutes(vehicle: Int, callback: (List<Route>) -> Unit) {

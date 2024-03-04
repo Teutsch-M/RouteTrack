@@ -97,6 +97,24 @@
         android:text="@string/total_fuel_cost_this_month"
         />
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/totalTrip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/_0"
+        android:textSize="40sp"
+        android:visibility="gone"
+        />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/text_totalTrip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/total_trip_this_month"
+        android:visibility="gone"
+        />
+
+
 
 
 </LinearLayout>

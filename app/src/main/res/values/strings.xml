@@ -36,6 +36,8 @@
     <string name="splash_icon">Splash icon</string>
     <string name="vehicle">Vehicle:</string>
     <string name="choose_vehicle">Choose vehicle:</string>
+    <string name="_0">0</string>
+    <string name="total_trip_this_month">Total Trip This Month</string>
     <string-array name="filter_options">
         <item>Date</item>
         <item>Distance</item>
