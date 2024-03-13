@@ -11,7 +11,7 @@ class RefuelRepository {
 
     private val TAG = "RefuelRepository"
     private val db = FirebaseFirestore.getInstance()
-    private val userId = FirebaseAuth.getInstance().currentUser!!.uid
+    private val userId = FirebaseAuth.getInstance().currentUser!!.email!!
     private val refuelCollection = db.collection("routes").document(userId).collection("refuel")
 
     fun addRefuel(refuel: Refuel) {

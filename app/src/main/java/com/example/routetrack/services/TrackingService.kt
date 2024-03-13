@@ -58,7 +58,7 @@ class TrackingService: LifecycleService() {
     private var totalTime = 0L
     private var lastSec = 0L
     private val db = FirebaseFirestore.getInstance()
-    private val userId = FirebaseAuth.getInstance().currentUser!!.uid
+    private val userId = FirebaseAuth.getInstance().currentUser!!.email!!
     private val docRef = db.collection("routes").document(userId)
 
 

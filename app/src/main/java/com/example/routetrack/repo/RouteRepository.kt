@@ -14,7 +14,7 @@ class RouteRepository {
 
     private val TAG = "RouteRepository"
     private val db = FirebaseFirestore.getInstance()
-    private val userId = FirebaseAuth.getInstance().currentUser!!.uid
+    private val userId = FirebaseAuth.getInstance().currentUser!!.email!!
     private val routesCollection = db.collection("routes").document(userId).collection("routes")
 
     fun getSortedRoutes(sortBy: String, callback: (List<Route>) -> Unit) {

@@ -73,20 +73,6 @@ class RouteFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                 recyclerView.layoutManager = LinearLayoutManager(context)
                 recyclerView.hasFixedSize()
 
-                /*
-                spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                        when (position) {
-                            0 -> viewModel.getDataForSpinner("timestamp")
-                            1 -> viewModel.getDataForSpinner("distance")
-                            2 -> viewModel.getDataForSpinner("duration")
-                            3 -> viewModel.getDataForSpinner("avgSpeed")
-                        }
-                    }
-
-                    override fun onNothingSelected(p0: AdapterView<*>?) {}
-                }
-                */
 
                 vehicleSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
                     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {

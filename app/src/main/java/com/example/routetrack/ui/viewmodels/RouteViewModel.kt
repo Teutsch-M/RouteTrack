@@ -17,7 +17,7 @@ class RouteViewModel: ViewModel() {
 
     private val TAG = "RouteViewModel"
     private val db = Firebase.firestore
-    private val userId = FirebaseAuth.getInstance().currentUser!!.uid
+    private val userId = FirebaseAuth.getInstance().currentUser!!.email!!
     private val routeRepo = RouteRepository()
     private val _routeList = MutableLiveData<List<Route>>()
     val routeList: LiveData<List<Route>> = _routeList.distinctUntilChanged()

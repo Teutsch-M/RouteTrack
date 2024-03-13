@@ -72,7 +72,7 @@ class TrackingFragment : Fragment() {
     private var coordinates = mutableListOf<MutableList<LatLng>>()
     private var routeTime: Long = 0
     private val db = FirebaseFirestore.getInstance()
-    private val userId = FirebaseAuth.getInstance().currentUser!!.uid
+    private val userId = FirebaseAuth.getInstance().currentUser!!.email!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
