@@ -38,6 +38,8 @@
     <string name="choose_vehicle">Choose vehicle:</string>
     <string name="_0">0</string>
     <string name="total_trip_this_month">Total Trip This Month</string>
+    <string name="profileimage">profileImage</string>
+    <string name="change_picture">Change Picture</string>
     <string-array name="filter_options">
         <item>Date</item>
         <item>Distance</item>
