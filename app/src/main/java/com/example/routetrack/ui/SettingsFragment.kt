@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.fragment.app.viewModels
+import com.bumptech.glide.Glide
 import com.example.routetrack.LoginActivity
 import com.example.routetrack.R
 import com.example.routetrack.database.Converter
@@ -81,7 +82,11 @@ class SettingsFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         db.get().addOnSuccessListener {
             val img = it.getString("profileImage")
             if (img != null) {
-                imgView.setImageBitmap(Converter.toBitmap(img))
+                Glide
+                    .with(requireContext())
+                    .load(Converter.toBitmap(img))
+                    .circleCrop()
+                    .into(imgView)
                 imgView.rotation = imgView.rotation - 90F
             }
         }
@@ -127,7 +132,9 @@ class SettingsFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                     .addOnFailureListener {  ex ->
                         Log.e(TAG, ex.message, ex)
                     }
+
             }
+
         }
     }
 
