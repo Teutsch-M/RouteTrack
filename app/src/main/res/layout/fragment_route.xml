@@ -11,11 +11,13 @@
         android:id="@+id/route_vehicleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="35dp"
         android:text="@string/vehicle"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/route_vehicleFilter"
+        app:layout_constraintEnd_toStartOf="@id/route_vehicleFilter"
         />
 
     <Spinner
@@ -27,6 +29,7 @@
         android:layout_marginTop="4dp"
         app:layout_constraintStart_toEndOf="@+id/route_vehicleText"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/route_sortbyText"
         />
 
 
@@ -39,9 +42,11 @@
         android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/route_sortbyText"
         />
 
     <TextView
+        android:id="@+id/route_sortbyText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/sort_by"
@@ -49,6 +54,7 @@
         app:layout_constraintEnd_toStartOf="@+id/route_filter"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/route_filter"
+        app:layout_constraintStart_toEndOf="@id/route_vehicleFilter"
         />
 
     <androidx.recyclerview.widget.RecyclerView
